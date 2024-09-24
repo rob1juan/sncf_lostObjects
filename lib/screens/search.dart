@@ -118,8 +118,8 @@ class _SearchPageState extends State<SearchPage> {
         color: AppColors.backgroundColor,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
+          child: ListView(
+            children: [
               Autocomplete<String>(
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text == '') {
@@ -249,62 +249,63 @@ class _SearchPageState extends State<SearchPage> {
               ),
               const SizedBox(height: 20),
               _searchResults != null && _searchResults!.isNotEmpty
-                  ? Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _searchResults!.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 5,
-                            margin: const EdgeInsets.all(10),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${_searchResults![index].gare}',
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'Date : ${DateFormat('yyyy-MM-dd').format(_searchResults![index].date)}',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'Objet : ${_searchResults![index].objet}',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'État :',
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    _searchResults![index].etat,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        color: _searchResults![index].etat ==
-                                                'Trouvé'
-                                            ? Colors.green
-                                            : Colors.red),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'Date de restitution : ${_searchResults![index].dateRestitution}',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: _searchResults!.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 5,
+                          margin: const EdgeInsets.all(10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${_searchResults![index].gare}',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Date : ${DateFormat(' yyyy-MM-dd').format(_searchResults![index].date)}',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Objet : ${_searchResults![index].objet}',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'État :',
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    Text(
+                                      _searchResults![index].etat,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: _searchResults![index].etat ==
+                                                  'Trouvé'
+                                              ? Colors.green
+                                              : Colors.red),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Date de restitution : ${_searchResults![index].dateRestitution}',
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     )
                   : _searchResults != null && _searchResults!.isEmpty
                       ? Text(
