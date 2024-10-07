@@ -5,6 +5,7 @@ import 'package:myapp/gares.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -86,6 +87,53 @@ Future<List<SearchResult>> searchApi(
   } catch (e) {
     throw Exception(e.toString());
   }
+}
+
+void _showObjectDetailsDialog(BuildContext context, SearchResult result) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Détails de l\'objet'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Gare: ${result.gare}'),
+            Text('Date: ${DateFormat('yyyy-MM-dd').format(result.date)}'),
+            Text('Objet: ${result.objet}'),
+            Text('État: ${result.etat}'),
+            Text('Date de restitution: ${result.dateRestitution}'),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Fermer'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _saveToHistory(SearchResult result) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> history = prefs.getStringList('history') ?? [];
+
+  // Convert SearchResult to JSON string
+  String resultJson = jsonEncode({
+    'gare': result.gare,
+    'date': result.date.toIso8601String(),
+    'objet': result.objet,
+    'etat': result.etat,
+    'dateRestitution': result.dateRestitution,
+  });
+
+  history.add(resultJson);
+  prefs.setStringList('history', history);
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -254,54 +302,62 @@ class _SearchPageState extends State<SearchPage> {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: _searchResults!.length,
                       itemBuilder: (context, index) {
-                        return Card(
-                          elevation: 5,
-                          margin: const EdgeInsets.all(10),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${_searchResults![index].gare}',
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Date : ${DateFormat(' yyyy-MM-dd').format(_searchResults![index].date)}',
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Objet : ${_searchResults![index].objet}',
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'État :',
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                    Text(
-                                      _searchResults![index].etat,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: _searchResults![index].etat ==
-                                                  'Trouvé'
-                                              ? Colors.green
-                                              : Colors.red),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Date de restitution : ${_searchResults![index].dateRestitution}',
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ],
+                        return GestureDetector(
+                          onTap: () {
+                            _saveToHistory(_searchResults![index]);
+                            _showObjectDetailsDialog(
+                                context, _searchResults![index]);
+                          },
+                          child: Card(
+                            elevation: 5,
+                            margin: const EdgeInsets.all(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${_searchResults![index].gare}',
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Date : ${DateFormat(' yyyy-MM-dd').format(_searchResults![index].date)}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Objet : ${_searchResults![index].objet}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'État :',
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                      Text(
+                                        _searchResults![index].etat,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color:
+                                                _searchResults![index].etat ==
+                                                        'Trouvé'
+                                                    ? Colors.green
+                                                    : Colors.red),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Date de restitution : ${_searchResults![index].dateRestitution}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );

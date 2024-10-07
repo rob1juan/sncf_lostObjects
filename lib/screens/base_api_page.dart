@@ -3,6 +3,7 @@ import 'package:myapp/colors.dart';
 import 'package:myapp/screens/search.dart';
 import 'package:myapp/screens/recent.dart';
 import 'package:myapp/screens/history.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BaseApiPage extends StatefulWidget {
   @override
@@ -10,6 +11,17 @@ class BaseApiPage extends StatefulWidget {
 }
 
 class _BaseApiPageState extends State<BaseApiPage> {
+  @override
+  void initState() {
+    super.initState();
+    _saveCurrentDateTime();
+  }
+
+  Future<void> _saveCurrentDateTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('lastConnexion', DateTime.now().toIso8601String());
+  }
+
   int _selectedIndex = 1;
 
   static const List<Widget> _widgetOptions = <Widget>[
