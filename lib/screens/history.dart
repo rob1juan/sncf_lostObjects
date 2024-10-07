@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/colors.dart';
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+class HistoryPage extends StatelessWidget {
+  const HistoryPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: AppColors.backgroundColor,
         leading: Container(), // Remove back button
         title: const Text(
-          "Paramètres",
+          "Historique de recherche",
           style: TextStyle(
               fontSize: 20, color: Colors.white), // Center and white text
         ),
@@ -23,7 +23,7 @@ class SettingsPage extends StatelessWidget {
           children: const <Widget>[
             // Contenu de la page Paramètres
             Text(
-              "Page Paramètres",
+              "Page Historique",
               style: TextStyle(fontSize: 20),
             ),
           ],

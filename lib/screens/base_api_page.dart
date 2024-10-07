@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/colors.dart';
 import 'package:myapp/screens/search.dart';
-import 'package:myapp/screens/about.dart';
-import 'package:myapp/screens/settings.dart';
+import 'package:myapp/screens/recent.dart';
+import 'package:myapp/screens/history.dart';
 
 class BaseApiPage extends StatefulWidget {
   @override
@@ -13,9 +13,9 @@ class _BaseApiPageState extends State<BaseApiPage> {
   int _selectedIndex = 1;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    AboutPage(),
+    RecentPage(),
     SearchPage(),
-    SettingsPage(),
+    HistoryPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,16 +35,16 @@ class _BaseApiPageState extends State<BaseApiPage> {
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.help_outline),
-            label: 'A propos',
+            icon: Icon(Icons.list),
+            label: 'Récent',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: 'Chercher',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Paramètres',
+            icon: Icon(Icons.timelapse),
+            label: 'Historique',
           ),
         ],
         selectedItemColor: AppColors.selectedNavbarColor,
