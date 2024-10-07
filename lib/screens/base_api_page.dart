@@ -14,12 +14,27 @@ class _BaseApiPageState extends State<BaseApiPage> {
   @override
   void initState() {
     super.initState();
-    _saveCurrentDateTime();
+    _updateConnectionDates();
   }
 
-  Future<void> _saveCurrentDateTime() async {
+  Future<void> _updateConnectionDates() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('lastConnexion', DateTime.now().toIso8601String());
+    String currentDateTime = DateTime.now().toIso8601String();
+
+    // Déplace la date actuelle vers la dernière connexion
+    String? lastConnexion = prefs.getString('currentDate');
+    if (lastConnexion != null) {
+      await prefs.setString('lastConnexion', lastConnexion);
+      print('Last connection updated to: $lastConnexion'); // Debugging
+    } else {
+      print('No previous currentDate found.'); // Debugging
+    }
+
+    // Met à jour la date actuelle
+    await prefs.setString('currentDate', currentDateTime);
+    print('Current date saved: $currentDateTime'); // Debugging
+    print(
+        'Test last connection set to: 2023-01-01T00:00:00.000000'); // Debugging
   }
 
   int _selectedIndex = 1;
