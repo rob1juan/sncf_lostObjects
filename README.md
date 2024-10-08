@@ -19,7 +19,7 @@ Suivez ces étapes pour commencer :
 1. Cloner le dépôt :
 
 ```sh
-git clone https://github.com/votre_nom/sncfflutter.git
+git clone https://github.com/rob1juan/sncf_lostObjects.git
 cd sncfflutter
 ```
 
